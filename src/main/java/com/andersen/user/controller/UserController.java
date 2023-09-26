@@ -51,12 +51,11 @@ public class UserController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        JSONObject jsonObject = new JSONObject(body);
+        JSONObject body = readBody(req);
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
         try {
-            UserCreateDto userCreateDto = getUserDtoCreate(jsonObject);
+            UserCreateDto userCreateDto = getUserDtoCreate(body);
             UserResponseDto userResponse = userService.create(userCreateDto);
 
             JSONObject userJson = new JSONObject(userResponse);
@@ -71,8 +70,22 @@ public class UserController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserResponseDto userDtoFull = userService.update(getUserDtoUpdate(req));
+        JSONObject body = readBody(req);
+        PrintWriter out = resp.getWriter();
+        resp.setContentType("application/json");
+        try {
+            UserResponseDto userForUpdate = getUserDtoUpdate(body);
+            userForUpdate.setId(Long.valueOf(req.getParameter("id")));
+            UserResponseDto userResponse = userService.update(userForUpdate);
 
+            JSONObject userJson = new JSONObject(userResponse);
+            out.print(userJson);
+        } catch (DatabaseException ex) {
+            JSONObject exception = new JSONObject();
+            exception.put("message", ex.getMessage());
+            out.print(exception);
+        }
+        out.flush();
     }
 
     @Override
@@ -89,6 +102,11 @@ public class UserController extends HttpServlet {
         }
     }
 
+    private static JSONObject readBody(HttpServletRequest req) throws IOException {
+        String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        return new JSONObject(body);
+    }
+
     private UserCreateDto getUserDtoCreate(JSONObject jsonObject) {
         return UserCreateDto.builder()
                 .name(jsonObject.getString("name"))
@@ -98,12 +116,11 @@ public class UserController extends HttpServlet {
                 .build();
     }
 
-    private UserResponseDto getUserDtoUpdate(HttpServletRequest request) {
+    private UserResponseDto getUserDtoUpdate(JSONObject jsonObject) {
         return UserResponseDto.builder()
-                .id(Long.parseLong(request.getParameter("id")))
-                .name(request.getParameter("name"))
-                .lastname(request.getParameter("lastname"))
-                .email(request.getParameter("email"))
+                .name(jsonObject.getString("name"))
+                .lastname(jsonObject.getString("lastname"))
+                .email(jsonObject.getString("email"))
                 .build();
     }
 }

@@ -19,7 +19,7 @@ public class UserDaoImpl implements UserDao<User> {
             "FROM users u WHERE id = ?";
     private final String GET_ALL = "SELECT u.id, u.name, u.lastname, u.email, u.password FROM users u";
     private final String CREATE = "INSERT INTO users (name, lastname, email, password) VALUES (?, ?, ?, ?);";
-    private final String UPDATE = "UPDATE users SET name = ?, lastname = ?, age = ? WHERE id= ?";
+    private final String UPDATE = "UPDATE users SET name = ?, lastname = ?, email = ? WHERE id= ?";
     private final String DELETE = "DELETE FROM users WHERE id = ?";
 
     public static UserDao getInstance() {
