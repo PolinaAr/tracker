@@ -6,6 +6,7 @@ import com.andersen.user.service.UserCreateDto;
 import com.andersen.user.service.UserResponseDto;
 import com.andersen.user.service.UserService;
 import com.andersen.user.service.UserServiceImpl;
+import com.andersen.util.EncryptorUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -84,7 +85,7 @@ public class UserController extends HttpServlet {
         return UserCreateDto.builder()
                 .name(request.getParameter("name"))
                 .lastname(request.getParameter("lastname"))
-                .email(request.getParameter("email"))
+                .email(EncryptorUtil.encrypt(request.getParameter("email")))
                 .password(request.getParameter("password"))
                 .build();
     }
