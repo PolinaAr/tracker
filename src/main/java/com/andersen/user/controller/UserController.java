@@ -73,11 +73,13 @@ public class UserController extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Long id = Long.parseLong(req.getParameter("id"));
         try {
-            req.setAttribute("userId", id);
             userService.deleteById(id);
-            req.getRequestDispatcher("/WEB-INF/pages/deletedRedirect.jsp").forward(req, resp);
-        } catch (EntityNotFoundException ex) {
-            req.getRequestDispatcher("/WEB-INF/pages/notFound.jsp").forward(req, resp);
+        } catch (EntityNotFoundException | DatabaseException ex) {
+            JSONObject userJson = new JSONObject("message", ex.getMessage());
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            out.print(userJson);
+            out.flush();
         }
     }
 
