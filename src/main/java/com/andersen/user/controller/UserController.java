@@ -15,11 +15,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @WebServlet("/users")
 public class UserController extends HttpServlet {
@@ -52,14 +51,21 @@ public class UserController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        BufferedReader reader = req.getReader();
-        UserCreateDto userCreateDto = getUserDtoCreate(req);
-        System.out.println(userCreateDto.toString());
-        UserResponseDto userResponse = userService.create(userCreateDto);
-        JSONObject userJson = new JSONObject(userResponse);
+        String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        JSONObject jsonObject = new JSONObject(body);
         PrintWriter out = resp.getWriter();
         resp.setContentType("application/json");
-        out.print(userJson);
+        try {
+            UserCreateDto userCreateDto = getUserDtoCreate(jsonObject);
+            UserResponseDto userResponse = userService.create(userCreateDto);
+
+            JSONObject userJson = new JSONObject(userResponse);
+            out.print(userJson);
+        } catch (DatabaseException ex) {
+            JSONObject exception = new JSONObject();
+            exception.put("message", ex.getMessage());
+            out.print(exception);
+        }
         out.flush();
     }
 
@@ -83,12 +89,12 @@ public class UserController extends HttpServlet {
         }
     }
 
-    private UserCreateDto getUserDtoCreate(HttpServletRequest request) {
+    private UserCreateDto getUserDtoCreate(JSONObject jsonObject) {
         return UserCreateDto.builder()
-                .name(request.getParameter("name"))
-                .lastname(request.getParameter("lastname"))
-                .email(EncryptorUtil.encrypt(request.getParameter("email")))
-                .password(request.getParameter("password"))
+                .name(jsonObject.getString("name"))
+                .lastname(jsonObject.getString("lastname"))
+                .email(jsonObject.getString("email"))
+                .password(EncryptorUtil.encrypt(jsonObject.getString("password")))
                 .build();
     }
 
