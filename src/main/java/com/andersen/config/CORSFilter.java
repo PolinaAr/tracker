@@ -22,9 +22,10 @@ public class CORSFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "http://localhost:3000/*");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, POST, PUT, DELETE");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-HEADERS","Content-Type, API-Key");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Credentials", "true");
 
         filterChain.doFilter(request, servletResponse);
     }
