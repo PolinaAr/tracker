@@ -42,6 +42,7 @@ public class UserController extends HttpServlet {
                 result = new JSONObject(user);
                 out.print(result);
             } catch (EntityNotFoundException | DatabaseException ex) {
+                resp.setStatus(400);
                 result.put("message", ex.getMessage());
                 out.print(result);
             }
@@ -61,6 +62,7 @@ public class UserController extends HttpServlet {
             JSONObject userJson = new JSONObject(userResponse);
             out.print(userJson);
         } catch (DatabaseException ex) {
+            resp.setStatus(400);
             JSONObject exception = new JSONObject();
             exception.put("message", ex.getMessage());
             out.print(exception);
@@ -84,6 +86,7 @@ public class UserController extends HttpServlet {
             JSONObject exception = new JSONObject();
             exception.put("message", ex.getMessage());
             out.print(exception);
+            resp.setStatus(400);
         }
         out.flush();
     }
@@ -97,6 +100,7 @@ public class UserController extends HttpServlet {
             JSONObject userJson = new JSONObject("message", ex.getMessage());
             PrintWriter out = resp.getWriter();
             resp.setContentType("application/json");
+            resp.setStatus(400);
             out.print(userJson);
             out.flush();
         }

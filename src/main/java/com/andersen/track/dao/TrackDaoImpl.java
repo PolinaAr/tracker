@@ -17,12 +17,12 @@ public class TrackDaoImpl implements TrackDao {
 
     private static TrackDao trackDao;
 
-    private final String GET_BY_USER_ID = "SELECT t.id, t.time, t.note, t.date FROM track t WHERE user_id = ?";
-    private final String GET_BY_ID = "SELECT t.id, t.time, t.note, t.date, t.user_id FROM track t WHERE id = ?";
-    private final String GET_BY_DATE = "SELECT t.id, t.time, t.note, t.user_id FROM track WHERE date = ?";
-    private final String CREATE = "INSERT INTO track (time, note, date, user_id) VALUES (?, ?, ?, ?);";
-    private final String UPDATE = "UPDATE track SET time = ?, note = ?, date = ? WHERE id= ?";
-    private final String DELETE = "DELETE FROM track WHERE id = ?";
+    private final String GET_BY_USER_ID = "SELECT t.id, t.time, t.note, t.date FROM tracks t WHERE user_id = ?";
+    private final String GET_BY_ID = "SELECT t.id, t.time, t.note, t.date, t.user_id FROM tracks t WHERE id = ?";
+    private final String GET_BY_DATE = "SELECT t.id, t.time, t.note, t.user_id FROM tracks WHERE date = ?";
+    private final String CREATE = "INSERT INTO tracks (time, note, date, user_id) VALUES (?, ?, ?, ?);";
+    private final String UPDATE = "UPDATE tracks SET time = ?, note = ?, date = ? WHERE id= ?";
+    private final String DELETE = "DELETE FROM tracks WHERE id = ?";
 
     public static TrackDao getInstance() {
         if (trackDao == null) {
@@ -51,7 +51,8 @@ public class TrackDaoImpl implements TrackDao {
                 .id(resultSet.getLong("id"))
                 .time(resultSet.getDouble("time"))
                 .note(resultSet.getString("note"))
-                .date(resultSet.getDate("date").toLocalDate()).build();
+                .date(resultSet.getDate("date").toLocalDate())
+                .userId(resultSet.getLong("user_id")).build();
     }
 
     @Override
