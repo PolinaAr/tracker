@@ -59,7 +59,31 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
+        HttpSession session = req.getSession();
+        Long id = Long.parseLong(req.getParameter("id"));
+
+        if (session.getAttribute("user") != null && isCorrectUser(session, id)){
+            UserResponseDto authUser = (UserResponseDto) session.getAttribute("user");
+            JSONObject body = readBody(req);
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+            try {
+                TrackResponseDto forUpdate = getTrackResponseDto(body);
+                forUpdate.setUserId(authUser.getId());
+                forUpdate.setId(id);
+                TrackResponseDto updated = trackService.update(forUpdate);
+
+                JSONObject updatedJson = new JSONObject(updated);
+                out.print(updatedJson);
+            } catch (DatabaseException ex) {
+                JSONObject exception = new JSONObject();
+                exception.put("message", ex.getMessage());
+                out.print(exception);
+            }
+            out.flush();
+        } else {
+            resp.setStatus(403);
+        }
     }
 
     @Override
@@ -90,6 +114,14 @@ public class TrackController extends HttpServlet {
 
     private TrackCreateDto getTrackCreateDto(JSONObject jsonObject) {
         return TrackCreateDto.builder()
+                .time(Double.parseDouble(jsonObject.getString("time")))
+                .note(jsonObject.getString("note"))
+                .date(LocalDate.parse(jsonObject.getString("date")))
+                .build();
+    }
+
+    private TrackResponseDto getTrackResponseDto(JSONObject jsonObject) {
+        return TrackResponseDto.builder()
                 .time(Double.parseDouble(jsonObject.getString("time")))
                 .note(jsonObject.getString("note"))
                 .date(LocalDate.parse(jsonObject.getString("date")))
