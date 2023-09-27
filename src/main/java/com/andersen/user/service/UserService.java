@@ -8,9 +8,13 @@ public interface UserService {
 
     UserResponseDto getById(Long id);
 
+    UserResponseDto getByEmail(String email);
+
     UserResponseDto create(UserCreateDto user);
 
     UserResponseDto update(UserResponseDto user);
+
+    boolean validateUserForLogin(String email, String password);
 
     void deleteById(Long id);
 }

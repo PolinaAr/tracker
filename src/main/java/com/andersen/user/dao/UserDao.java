@@ -8,6 +8,8 @@ public interface UserDao<E> {
 
     List<E> getAll();
 
+    E getByEmail(String email);
+
     E create(E e);
 
     E update(E e);

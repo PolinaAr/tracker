@@ -18,6 +18,8 @@ public class UserDaoImpl implements UserDao<User> {
     private final String GET_BY_ID = "SELECT u.id, u.name, u.lastname, u.email, u.password " +
             "FROM users u WHERE id = ?";
     private final String GET_ALL = "SELECT u.id, u.name, u.lastname, u.email, u.password FROM users u";
+    private final String GET_BY_EMAIL = "SELECT u.id, u.name, u.lastname, u.email, u.password " +
+            "FROM users u WHERE email = ?";
     private final String CREATE = "INSERT INTO users (name, lastname, email, password) VALUES (?, ?, ?, ?);";
     private final String UPDATE = "UPDATE users SET name = ?, lastname = ?, email = ? WHERE id= ?";
     private final String DELETE = "DELETE FROM users WHERE id = ?";
@@ -56,6 +58,21 @@ public class UserDaoImpl implements UserDao<User> {
             throw new DatabaseException("Can't get all users");
         }
         return users;
+    }
+
+    @Override
+    public User getByEmail(String email) {
+        try (PreparedStatement statement = DBConfigurator.getConnection().prepareStatement(GET_BY_EMAIL)) {
+            statement.setString(1, email);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return getUserFromResultSet(resultSet);
+            } else {
+                throw new EntityNotFoundException("There is no user with email: " + email);
+            }
+        } catch (SQLException e) {
+            throw new EntityNotFoundException("Can't get user with email: " + email);
+        }
     }
 
     @Override

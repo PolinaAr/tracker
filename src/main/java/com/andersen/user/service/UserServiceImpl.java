@@ -4,6 +4,7 @@ import com.andersen.user.UserMapper;
 import com.andersen.user.dao.User;
 import com.andersen.user.dao.UserDao;
 import com.andersen.user.dao.UserDaoImpl;
+import com.andersen.util.EncryptorUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,9 +35,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponseDto getByEmail(String email) {
+        return userMapper.mapToResponseDto(userDao.getByEmail(email));
+    }
+
+    @Override
     public UserResponseDto create(UserCreateDto userDto) {
         User user = userDao.create(userMapper.mapToEntity(userDto));
         return userMapper.mapToResponseDto(user);
+    }
+
+    @Override
+    public boolean validateUserForLogin(String email, String password) {
+        User user = userDao.getByEmail(email);
+        if (user == null) {
+            return false;
+        }
+        String hashPassword = EncryptorUtil.encrypt(password);
+        return user.getPassword().equals(hashPassword);
     }
 
     @Override
