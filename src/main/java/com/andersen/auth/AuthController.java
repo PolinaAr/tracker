@@ -22,13 +22,13 @@ public class AuthController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String body = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        JSONObject user = new JSONObject(body);
-        String email = user.getString("email");
 
         String path = req.getServletPath();
         HttpSession httpSession = req.getSession();
         switch (path){
             case "/login":
+                JSONObject user = new JSONObject(body);
+                String email = user.getString("email");
                 if (userService.validateUserForLogin(email, user.getString("password"))){
                     httpSession.setAttribute("user", userService.getByEmail(email));
                 } else {

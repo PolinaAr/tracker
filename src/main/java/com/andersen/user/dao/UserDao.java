@@ -2,17 +2,17 @@ package com.andersen.user.dao;
 
 import java.util.List;
 
-public interface UserDao<E> {
+public interface UserDao {
 
-    E getById(Long id);
+    User getById(Long id);
 
-    List<E> getAll();
+    List<User> getAll();
 
-    E getByEmail(String email);
+    User getByEmail(String email);
 
-    E create(E e);
+    User create(User e);
 
-    E update(E e);
+    User update(User e);
 
     boolean deleteById(Long id);
 }

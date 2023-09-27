@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDao<User> userDao = UserDaoImpl.getInstance();
+    private final UserDao userDao = UserDaoImpl.getInstance();
     private static UserService userService;
     private static UserMapper userMapper = UserMapper.getInstance();
 
