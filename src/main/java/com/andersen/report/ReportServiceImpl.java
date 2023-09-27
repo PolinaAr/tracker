@@ -20,17 +20,26 @@ import java.util.List;
 
 public class ReportServiceImpl implements ReportService{
 
+    private static ReportService reportService;
     private TrackService trackService = TrackServiceImpl.getInstance();
     private UserService userService = UserServiceImpl.getInstance();
+
+    public static ReportService getInstance() {
+        if (reportService == null) {
+            reportService = new ReportServiceImpl();
+        }
+        return reportService;
+    }
+
     @Override
-    public void createDailyReport(LocalDate localDate) {
+    public String createDailyReport(LocalDate localDate, String reportName) {
         List<TrackResponseDto> tracks = trackService.getByData(localDate);
 
         Document doc = new Document();
         PdfWriter writer = null;
 
         try {
-            writer = PdfWriter.getInstance(doc, new FileOutputStream("Report.pdf"));
+            writer = PdfWriter.getInstance(doc, new FileOutputStream(reportName));
             doc.open();
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
@@ -59,9 +68,8 @@ public class ReportServiceImpl implements ReportService{
             }
 
             doc.add(table);
-        } catch (DocumentException e) {
-            throw new RuntimeException(e);
-        } catch (FileNotFoundException e) {
+            return reportName;
+        } catch (DocumentException | FileNotFoundException e) {
             throw new RuntimeException(e);
         } finally {
             doc.close();

@@ -4,5 +4,5 @@ import java.time.LocalDate;
 
 public interface ReportService {
 
-    void createDailyReport(LocalDate localDate);
+    String createDailyReport(LocalDate localDate, String reportName);
 }
