@@ -15,5 +15,5 @@ public interface TrackService {
 
     TrackResponseDto update(TrackResponseDto trackResponseDto);
 
-    void deleteById(Long id);
+    boolean deleteById(Long id);
 }
