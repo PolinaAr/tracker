@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @WebServlet("/tracks")
@@ -63,16 +64,22 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
         Long id = Long.parseLong(req.getParameter("id"));
-        try {
-            trackService.deleteById(id);
-        } catch (EntityNotFoundException | DatabaseException ex) {
-            JSONObject userJson = new JSONObject("message", ex.getMessage());
-            PrintWriter out = resp.getWriter();
-            resp.setContentType("application/json");
-            resp.setStatus(400);
-            out.print(userJson);
-            out.flush();
+
+        if (session.getAttribute("user") != null && isCorrectUser(session, id)){
+            try {
+                trackService.deleteById(id);
+            } catch (EntityNotFoundException | DatabaseException ex) {
+                JSONObject exception = new JSONObject("message", ex.getMessage());
+                PrintWriter out = resp.getWriter();
+                resp.setContentType("application/json");
+                resp.setStatus(400);
+                out.print(exception);
+                out.flush();
+            }
+        } else {
+            resp.setStatus(403);
         }
     }
 
@@ -87,5 +94,15 @@ public class TrackController extends HttpServlet {
                 .note(jsonObject.getString("note"))
                 .date(LocalDate.parse(jsonObject.getString("date")))
                 .build();
+    }
+
+    private boolean isCorrectUser(HttpSession session, Long trackId){
+        try{
+            UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute("user");
+            TrackResponseDto trackResponseDto = trackService.getById(trackId);
+            return Objects.equals(userResponseDto.getId(), trackResponseDto.getUserId());
+        } catch (EntityNotFoundException | DatabaseException ex) {
+            return false;
+        }
     }
 }
