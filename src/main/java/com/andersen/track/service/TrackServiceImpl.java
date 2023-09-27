@@ -9,10 +9,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TrackServiceImpl implements TrackService{
+public class TrackServiceImpl implements TrackService {
 
-    private final TrackDao trackDao = TrackDaoImpl.getInstance();
-    private final TrackMapper trackMapper = TrackMapper.getInstance();
+    private TrackDao trackDao = TrackDaoImpl.getInstance();
+    private TrackMapper trackMapper = TrackMapper.getInstance();
     private static TrackService trackService;
 
     public static TrackService getInstance() {
@@ -54,7 +54,7 @@ public class TrackServiceImpl implements TrackService{
     }
 
     @Override
-    public void deleteById(Long id) {
-        trackDao.deleteById(id);
+    public boolean deleteById(Long id) {
+        return trackDao.deleteById(id);
     }
 }
