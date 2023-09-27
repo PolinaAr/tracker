@@ -17,7 +17,7 @@ public class TrackDaoImpl implements TrackDao {
 
     private static TrackDao trackDao;
 
-    private final String GET_BY_USER_ID = "SELECT t.id, t.time, t.note, t.date FROM tracks t WHERE user_id = ?";
+    private final String GET_BY_USER_ID = "SELECT t.id, t.time, t.note, t.date, t.user_id FROM tracks t WHERE user_id = ?";
     private final String GET_BY_ID = "SELECT t.id, t.time, t.note, t.date, t.user_id FROM tracks t WHERE id = ?";
     private final String GET_BY_DATE = "SELECT t.id, t.time, t.note, t.user_id FROM tracks WHERE date = ?";
     private final String CREATE = "INSERT INTO tracks (time, note, date, user_id) VALUES (?, ?, ?, ?);";

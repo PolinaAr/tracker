@@ -7,6 +7,7 @@ import com.andersen.track.service.TrackResponseDto;
 import com.andersen.track.service.TrackService;
 import com.andersen.track.service.TrackServiceImpl;
 import com.andersen.user.service.UserResponseDto;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -28,7 +30,37 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        HttpSession session = req.getSession();
+        if (session.getAttribute("user") != null) {
+            PrintWriter out = resp.getWriter();
+            resp.setContentType("application/json");
+
+            UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute("user");
+            Long userId = userResponseDto.getId();
+            try {
+                if (req.getParameter("id") == null) {
+                    List<TrackResponseDto> tracks = trackService.getByUserId(userId);
+                    JSONArray tracksJson = new JSONArray(tracks);
+                    out.print(tracksJson);
+                } else {
+                    Long id = Long.valueOf(req.getParameter("id"));
+                    if (isCorrectUser(session, id)) {
+                        TrackResponseDto responseDto = trackService.getById(id);
+                        JSONObject responseJson = new JSONObject(responseDto);
+                        out.print(responseJson);
+                    } else {
+                        resp.setStatus(403);
+                    }
+                }
+            } catch (DatabaseException | EntityNotFoundException ex) {
+                JSONObject exception = new JSONObject();
+                exception.put("message", ex.getMessage());
+                out.print(exception);
+            }
+            out.flush();
+        } else {
+            resp.setStatus(403);
+        }
     }
 
     @Override
@@ -62,7 +94,7 @@ public class TrackController extends HttpServlet {
         HttpSession session = req.getSession();
         Long id = Long.parseLong(req.getParameter("id"));
 
-        if (session.getAttribute("user") != null && isCorrectUser(session, id)){
+        if (session.getAttribute("user") != null && isCorrectUser(session, id)) {
             UserResponseDto authUser = (UserResponseDto) session.getAttribute("user");
             JSONObject body = readBody(req);
             PrintWriter out = resp.getWriter();
@@ -91,7 +123,7 @@ public class TrackController extends HttpServlet {
         HttpSession session = req.getSession();
         Long id = Long.parseLong(req.getParameter("id"));
 
-        if (session.getAttribute("user") != null && isCorrectUser(session, id)){
+        if (session.getAttribute("user") != null && isCorrectUser(session, id)) {
             try {
                 trackService.deleteById(id);
             } catch (EntityNotFoundException | DatabaseException ex) {
@@ -128,8 +160,8 @@ public class TrackController extends HttpServlet {
                 .build();
     }
 
-    private boolean isCorrectUser(HttpSession session, Long trackId){
-        try{
+    private boolean isCorrectUser(HttpSession session, Long trackId) {
+        try {
             UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute("user");
             TrackResponseDto trackResponseDto = trackService.getById(trackId);
             return Objects.equals(userResponseDto.getId(), trackResponseDto.getUserId());
