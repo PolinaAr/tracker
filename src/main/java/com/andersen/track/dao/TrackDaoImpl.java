@@ -19,7 +19,7 @@ public class TrackDaoImpl implements TrackDao {
 
     private final String GET_BY_USER_ID = "SELECT t.id, t.time, t.note, t.date, t.user_id FROM tracks t WHERE user_id = ?";
     private final String GET_BY_ID = "SELECT t.id, t.time, t.note, t.date, t.user_id FROM tracks t WHERE id = ?";
-    private final String GET_BY_DATE = "SELECT t.id, t.time, t.note, t.user_id FROM tracks WHERE date = ?";
+    private final String GET_BY_DATE = "SELECT t.id, t.time, t.note, t.date, t.user_id FROM tracks t WHERE date = ?";
     private final String CREATE = "INSERT INTO tracks (time, note, date, user_id) VALUES (?, ?, ?, ?);";
     private final String UPDATE = "UPDATE tracks SET time = ?, note = ?, date = ? WHERE id= ?";
     private final String DELETE = "DELETE FROM tracks WHERE id = ?";

@@ -7,9 +7,9 @@ import java.sql.SQLException;
 public class DBConfigurator {
     private static volatile Connection connection;
     private static final PropertiesLoader props = new PropertiesLoader();
-    private static final String url = props.getDbUrl();
-    private static final String user = props.getDbUser();
-    private static final String password = props.getDbPassword();
+    private static final String url = props.getProperty("db.url");
+    private static final String user = props.getProperty("db.user");
+    private static final String password = props.getProperty("db.password");
 
     public static Connection getConnection (){
         if (connection == null){

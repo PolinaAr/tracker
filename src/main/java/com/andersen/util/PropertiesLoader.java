@@ -15,7 +15,7 @@ public class PropertiesLoader {
             if (inputStream != null) {
                 properties.load(inputStream);
             } else {
-                System.err.println("Файл свойств '" + pathToProperties + "' не найден.");
+                System.err.println("Properties file '" + pathToProperties + "' wasn't found.");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -23,15 +23,8 @@ public class PropertiesLoader {
         return properties;
     }
 
-    public String getDbUser() {
-        return loadProperties().getProperty("db.user");
+    public String getProperty(String prop) {
+        return loadProperties().getProperty(prop);
     }
 
-    public String getDbPassword() {
-        return loadProperties().getProperty("db.password");
-    }
-
-    public String getDbUrl() {
-        return loadProperties().getProperty("db.url");
-    }
 }
