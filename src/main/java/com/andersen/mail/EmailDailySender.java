@@ -4,7 +4,6 @@ import com.andersen.report.ReportService;
 import com.andersen.report.ReportServiceImpl;
 import com.andersen.util.PropertiesLoader;
 
-import java.io.File;
 import java.time.LocalDate;
 
 public class EmailDailySender {
@@ -13,6 +12,7 @@ public class EmailDailySender {
         EmailDailySender sender = new EmailDailySender();
         sender.sendEmail();
     }
+
     private static ReportService reportService = ReportServiceImpl.getInstance();
     private static final PropertiesLoader props = new PropertiesLoader();
     private final String from = props.getProperty("mail.from");
@@ -21,7 +21,7 @@ public class EmailDailySender {
     private final int port = Integer.parseInt(props.getProperty("mail.port"));
     private final String to = props.getProperty("mail.to");
 
-    public void sendEmail(){
+    public void sendEmail() {
         String subject = "Daily report";
         String body = "It's a today daily report: " + LocalDate.now();
         String reportFile = "src\\main\\resources\\reports\\DailyReport.pdf";
