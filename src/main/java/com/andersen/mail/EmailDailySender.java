@@ -16,11 +16,6 @@ public class EmailDailySender {
     private final int port = Integer.parseInt(props.getProperty("mail.port"));
     private final String to = props.getProperty("mail.to");
 
-    public static void main(String[] args) {
-        EmailDailySender sender = new EmailDailySender();
-        sender.sendEmail();
-    }
-
     public void sendEmail(){
         String subject = "Daily report";
         String body = "It's a today daily report: " + LocalDate.now();

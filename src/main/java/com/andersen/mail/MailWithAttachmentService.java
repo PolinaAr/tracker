@@ -62,6 +62,7 @@ public class MailWithAttachmentService {
 
     private Session getSession() {
         Properties props = new Properties();
+        props.put("mail.protocol", "smtps");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", this.host);
