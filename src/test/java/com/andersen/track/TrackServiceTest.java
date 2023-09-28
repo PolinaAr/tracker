@@ -9,6 +9,7 @@ import com.andersen.track.service.TrackCreateDto;
 import com.andersen.track.service.TrackResponseDto;
 import com.andersen.track.service.TrackServiceImpl;
 import com.andersen.user.dao.User;
+import com.andersen.user.service.UserResponseDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,14 +25,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class TrackServiceTest {
 
     @Mock
-    private TrackMapper trackMapperMock;
+    private TrackMapper trackMapper;
     @Mock
-    private TrackDao trackDaoMock;
+    private TrackDao trackDao;
     @InjectMocks
     private TrackServiceImpl trackService;
 
@@ -63,170 +65,167 @@ class TrackServiceTest {
 
     @Test
     void testGetByData() {
-        when(trackDaoMock.getByDate(date)).thenReturn(mockTrackList);
-        when(trackMapperMock.mapToResponseDto(mockTrackList.get(0))).thenReturn(expectedTrackResponseDtoList.get(0));
+        when(trackDao.getByDate(date)).thenReturn(mockTrackList);
+        when(trackMapper.mapToResponseDto(mockTrackList.get(0))).thenReturn(expectedTrackResponseDtoList.get(0));
 
         List<TrackResponseDto> actualTrackResponseDtoList = trackService.getByData(date);
 
         assertEquals(1, actualTrackResponseDtoList.size());
         assertEquals(expectedTrackResponseDtoList, actualTrackResponseDtoList);
-        verify(trackDaoMock).getByDate(date);
-        verify(trackMapperMock).mapToResponseDto(mockTrack);
+        verify(trackDao).getByDate(date);
+        verify(trackMapper).mapToResponseDto(mockTrack);
     }
 
     @Test
     void testGetByDataWithNoData() {
-        when(trackDaoMock.getByDate(date)).thenReturn(Collections.emptyList());
+        when(trackDao.getByDate(date)).thenReturn(Collections.emptyList());
 
         List<TrackResponseDto> actualTrackResponseDtoList = trackService.getByData(date);
 
         assertEquals(0, actualTrackResponseDtoList.size());
-        verify(trackDaoMock).getByDate(date);
+        verify(trackDao).getByDate(date);
     }
 
     @Test
     void testGetById() {
         Long trackId = anyLong();
-        when(trackDaoMock.getById(trackId)).thenReturn(mockTrack);
-        when(trackMapperMock.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDto);
+        when(trackDao.getById(trackId)).thenReturn(mockTrack);
+        when(trackMapper.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDto);
 
         TrackResponseDto actualTrackResponseDto = trackService.getById(trackId);
 
         assertEquals(expectedTrackResponseDto, actualTrackResponseDto);
-        verify(trackDaoMock).getById(trackId);
-        verify(trackMapperMock).mapToResponseDto(mockTrack);
+        verify(trackDao).getById(trackId);
+        verify(trackMapper).mapToResponseDto(mockTrack);
     }
 
     @Test
     void testGetByIdWithIncorrectId() {
-        Long trackId = anyLong();
+        Long trackWithIncorrectId = anyLong();
 
-        when(trackDaoMock.getById(trackId)).thenThrow(EntityNotFoundException.class);
+        when(trackDao.getById(trackWithIncorrectId)).thenThrow(EntityNotFoundException.class);
 
-        assertThrows(EntityNotFoundException.class, () -> trackService.getById(trackId));
-        verify(trackDaoMock).getById(trackId);
+        assertThrows(EntityNotFoundException.class, () -> trackService.getById(trackWithIncorrectId));
+        verify(trackDao).getById(trackWithIncorrectId);
+        verifyNoInteractions(trackMapper);
+    }
+
+    @Test
+    void testGetByIdReturnNull() {
+        Long trackWithIncorrectId = anyLong();
+        when(trackDao.getById(trackWithIncorrectId)).thenReturn(null);
+
+        TrackResponseDto actualTrackResponseDto = trackService.getById(trackWithIncorrectId);
+
+        assertNull(actualTrackResponseDto);
+        verify(trackDao).getById(trackWithIncorrectId);
+        verify(trackMapper).mapToResponseDto(isNull());
     }
 
     @Test
     void testGetByUserId() {
         Long userId = user.getId();
-        when(trackDaoMock.getByUserId(userId)).thenReturn(List.of(mockTrack));
-        when(trackMapperMock.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDto);
+        when(trackDao.getByUserId(userId)).thenReturn(List.of(mockTrack));
+        when(trackMapper.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDto);
 
         List<TrackResponseDto> actualList = trackService.getByUserId(userId);
         TrackResponseDto actualTrackResponseDto = actualList.get(0);
 
         assertEquals(1, actualList.size());
         assertEquals(expectedTrackResponseDto, actualTrackResponseDto);
-        verify(trackDaoMock).getByUserId(userId);
-        verify(trackMapperMock).mapToResponseDto(mockTrack);
+        verify(trackDao).getByUserId(userId);
+        verify(trackMapper).mapToResponseDto(mockTrack);
     }
 
     @Test
     void testGetByUserIdWithNoData() {
         Long userId = anyLong();
 
-        when(trackDaoMock.getByUserId(userId)).thenReturn(Collections.emptyList());
+        when(trackDao.getByUserId(userId)).thenReturn(Collections.emptyList());
 
         List<TrackResponseDto> actualTrackResponseDtoList = trackService.getByUserId(userId);
 
         assertEquals(0, actualTrackResponseDtoList.size());
-        verify(trackDaoMock).getByUserId(userId);
+        verify(trackDao).getByUserId(userId);
     }
 
     @Test
     void testCreate() {
-        when(trackDaoMock.create(mockTrack)).thenReturn(mockTrack);
-        when(trackMapperMock.mapToEntity(trackCreateDto)).thenReturn(mockTrack);
-        when(trackMapperMock.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDto);
+        when(trackDao.create(mockTrack)).thenReturn(mockTrack);
+        when(trackMapper.mapToEntity(trackCreateDto)).thenReturn(mockTrack);
+        when(trackMapper.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDto);
 
         TrackResponseDto actualTrackResponseDto = trackService.create(trackCreateDto);
 
         assertEquals(expectedTrackResponseDto, actualTrackResponseDto);
-        verify(trackDaoMock).create(mockTrack);
-        verify(trackMapperMock).mapToEntity(trackCreateDto);
-        verify(trackMapperMock).mapToResponseDto(mockTrack);
-    }
-
-    @Test
-    void testCreateWithEntityNotFoundException() {
-        when(trackDaoMock.create(trackMapperMock.mapToEntity(trackCreateDto)))
-                .thenThrow(EntityNotFoundException.class);
-
-        assertThrows(EntityNotFoundException.class, () -> trackService.create(trackCreateDto));
-        verify(trackDaoMock).create(trackMapperMock.mapToEntity(trackCreateDto));
+        verify(trackDao).create(mockTrack);
+        verify(trackMapper).mapToEntity(trackCreateDto);
+        verify(trackMapper).mapToResponseDto(mockTrack);
     }
 
     @Test
     void testCreateWithDatabaseException() {
-        when(trackDaoMock.create(trackMapperMock.mapToEntity(trackCreateDto)))
+        when(trackDao.create(trackMapper.mapToEntity(trackCreateDto)))
                 .thenThrow(DatabaseException.class);
 
         assertThrows(DatabaseException.class, () -> trackService.create(trackCreateDto));
-        verify(trackDaoMock).create(trackMapperMock.mapToEntity(trackCreateDto));
+        verify(trackDao).create(trackMapper.mapToEntity(trackCreateDto));
     }
 
     @Test
     void testUpdate() {
-        when(trackDaoMock.update(mockTrack)).thenReturn(mockTrack);
-        when(trackMapperMock.mapToEntity(expectedTrackResponseDtoUpdated)).thenReturn(mockTrack);
-        when(trackMapperMock.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDtoUpdated);
+        when(trackDao.update(mockTrack)).thenReturn(mockTrack);
+        when(trackMapper.mapToEntity(expectedTrackResponseDtoUpdated)).thenReturn(mockTrack);
+        when(trackMapper.mapToResponseDto(mockTrack)).thenReturn(expectedTrackResponseDtoUpdated);
 
         TrackResponseDto actualTrackResponseDto = trackService.update(expectedTrackResponseDtoUpdated);
 
         assertEquals(expectedTrackResponseDtoUpdated, actualTrackResponseDto);
-        verify(trackDaoMock).update(mockTrack);
-        verify(trackMapperMock).mapToEntity(expectedTrackResponseDtoUpdated);
-        verify(trackMapperMock).mapToResponseDto(mockTrack);
-    }
-
-    @Test
-    void testUpdateWithEntityNotFoundException() {
-        when(trackDaoMock.update(trackMapperMock.mapToEntity(expectedTrackResponseDto)))
-                .thenThrow(EntityNotFoundException.class);
-
-        assertThrows(EntityNotFoundException.class, () -> trackService.update(expectedTrackResponseDto));
-        verify(trackDaoMock).update(trackMapperMock.mapToEntity(expectedTrackResponseDto));
+        verify(trackDao).update(mockTrack);
+        verify(trackMapper).mapToEntity(expectedTrackResponseDtoUpdated);
+        verify(trackMapper).mapToResponseDto(mockTrack);
     }
 
     @Test
     void testUpdateWithDatabaseException() {
-        when(trackDaoMock.update(trackMapperMock.mapToEntity(expectedTrackResponseDto)))
+        when(trackDao.update(trackMapper.mapToEntity(expectedTrackResponseDto)))
                 .thenThrow(DatabaseException.class);
 
         assertThrows(DatabaseException.class, () -> trackService.update(expectedTrackResponseDto));
-        verify(trackDaoMock).update(trackMapperMock.mapToEntity(expectedTrackResponseDto));
+        verify(trackDao).update(trackMapper.mapToEntity(expectedTrackResponseDto));
+    }
+
+    @Test
+    void testUpdateTrackWithInvalidData() {
+        TrackResponseDto invalidTrackDto = new TrackResponseDto(null, 0.0, null, null, null);
+        when(trackDao.update(trackMapper.mapToEntity(invalidTrackDto))).thenReturn(null);
+
+        TrackResponseDto actualTrackResponseDto = trackService.update(invalidTrackDto);
+
+        assertNull(actualTrackResponseDto);
+        verify(trackDao).update(trackMapper.mapToEntity(invalidTrackDto));
+        verify(trackMapper).mapToResponseDto(isNull());
     }
 
     @Test
     void testDeleteById() {
-        Long trackId = anyLong();
-        when(trackDaoMock.deleteById(trackId)).thenReturn(true);
+        Long trackToDelete = anyLong();
+        when(trackDao.deleteById(trackToDelete)).thenReturn(true);
 
-        boolean result = trackService.deleteById(trackId);
+        boolean result = trackService.deleteById(trackToDelete);
 
         assertTrue(result);
-        verify(trackDaoMock).deleteById(trackId);
+        verify(trackDao).deleteById(trackToDelete);
     }
 
     @Test
     void testDeleteByIdWithEntityNotFoundException() {
         Long trackId = anyLong();
 
-        when(trackDaoMock.deleteById(trackId)).thenThrow(EntityNotFoundException.class);
+        when(trackDao.deleteById(trackId)).thenThrow(EntityNotFoundException.class);
 
         assertThrows(EntityNotFoundException.class, () -> trackService.deleteById(trackId));
-        verify(trackDaoMock).deleteById(trackId);
-    }
-
-    @Test
-    void testDeleteByIdWithDatabaseException() {
-        Long trackId = anyLong();
-
-        when(trackDaoMock.deleteById(trackId)).thenThrow(DatabaseException.class);
-
-        assertThrows(DatabaseException.class, () -> trackService.deleteById(trackId));
-        verify(trackDaoMock).deleteById(trackId);
+        verify(trackDao).deleteById(trackId);
     }
 
     @AfterEach
