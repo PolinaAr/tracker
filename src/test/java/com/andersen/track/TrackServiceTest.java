@@ -9,7 +9,6 @@ import com.andersen.track.service.TrackCreateDto;
 import com.andersen.track.service.TrackResponseDto;
 import com.andersen.track.service.TrackServiceImpl;
 import com.andersen.user.dao.User;
-import com.andersen.user.service.UserResponseDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class TrackServiceTest {
