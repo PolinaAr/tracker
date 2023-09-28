@@ -16,5 +16,5 @@ public interface UserService {
 
     boolean validateUserForLogin(String email, String password);
 
-    void deleteById(Long id);
+    boolean deleteById(Long id);
 }

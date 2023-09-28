@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao = UserDaoImpl.getInstance();
+    private UserDao userDao = UserDaoImpl.getInstance();
+    private UserMapper userMapper = UserMapper.getInstance();
     private static UserService userService;
-    private static UserMapper userMapper = UserMapper.getInstance();
 
     public static UserService getInstance() {
         if (userService == null) {
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        userDao.deleteById(id);
+    public boolean deleteById(Long id) {
+        return userDao.deleteById(id);
     }
 }
