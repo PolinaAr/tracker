@@ -13,7 +13,7 @@ public class EmailDailySender {
     private final String from = props.getProperty("mail.from");
     private final String password = props.getProperty("mail.password");
     private final String host = props.getProperty("mail.host");
-    private final String port = props.getProperty("mail.port");
+    private final int port = Integer.parseInt(props.getProperty("mail.port"));
     private final String to = props.getProperty("mail.to");
 
     public static void main(String[] args) {

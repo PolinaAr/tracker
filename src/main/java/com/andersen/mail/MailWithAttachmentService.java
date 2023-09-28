@@ -1,7 +1,5 @@
 package com.andersen.mail;
 
-import com.andersen.exception.EmailException;
-
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -10,7 +8,6 @@ import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -25,10 +22,10 @@ public class MailWithAttachmentService {
     private final String from;
     private final String password;
     private final String host;
-    private final String port;
+    private final int port;
     private final String to;
 
-    public MailWithAttachmentService(String from, String password, String host, String port, String to){
+    public MailWithAttachmentService(String from, String password, String host, int port, String to) {
         this.from = from;
         this.password = password;
         this.host = host;
@@ -51,14 +48,15 @@ public class MailWithAttachmentService {
             multipart.addBodyPart(messageBodyPart);
 
             MimeBodyPart attachmentPart = new MimeBodyPart();
-            attachmentPart.attachFile(new File("C:\\Users\\User\\IdeaProjects\\time-tracker\\Report.pdf"));
+            attachmentPart.attachFile(new File(filename));
 //            attachmentPart.attachFile(getFile(filename));
             multipart.addBodyPart(attachmentPart);
 
             message.setContent(multipart);
             Transport.send(message);
         } catch (MessagingException | IOException e) {
-            throw new EmailException("Can't send email");
+            throw new RuntimeException(e);
+//            throw new EmailException("Can't send email");
         }
     }
 
