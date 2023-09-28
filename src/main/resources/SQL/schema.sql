@@ -14,3 +14,6 @@ CREATE TABLE IF NOT EXISTS tracks (
     date date NOT NULL,
     user_id BIGINT REFERENCES "users"(id)
 );
+
+DROP table tracks;
+DROP table users;

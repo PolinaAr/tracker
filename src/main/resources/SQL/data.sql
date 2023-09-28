@@ -1,3 +1,3 @@
-INSERT INTO users(name, lastname, email, password) VALUES ('Anton', 'Anton', 'anton@mail.com', 12345);
-INSERT INTO users(name, lastname, email, password) VALUES ('Dima', 'Dima', 'dima@mail.com', 12345);
-INSERT INTO users(name, lastname, email, password) VALUES ('Polina', 'Polina', 'polina@mail.com', 12345);
+INSERT INTO users(name, lastname, email, password) VALUES ('Anton', 'Anton', 'anton@mail.com', '8cb2237d0679ca88db6464eac60da96345513964');
+INSERT INTO users(name, lastname, email, password) VALUES ('Dima', 'Dima', 'dima@mail.com', '8cb2237d0679ca88db6464eac60da96345513964');
+INSERT INTO users(name, lastname, email, password) VALUES ('Polina', 'Polina', 'polina@mail.com', '8cb2237d0679ca88db6464eac60da96345513964');

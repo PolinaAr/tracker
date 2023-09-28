@@ -24,7 +24,7 @@ public class EmailDailySender {
     public void sendEmail(){
         String subject = "Daily report";
         String body = "It's a today daily report: " + LocalDate.now();
-        String reportName = reportService.createDailyReport(LocalDate.now(), "C:\\Users\\User\\IdeaProjects\\time-tracker\\Report.pdf");
+        String reportName = reportService.createDailyReport(LocalDate.now(), "/src/main/resources/reports/report.pdf");
         MailWithAttachmentService mail = new MailWithAttachmentService(from, password, host, port, to);
         mail.sendMail(subject, body, reportName);
     }
