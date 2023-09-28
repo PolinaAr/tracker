@@ -17,3 +17,6 @@ CREATE TABLE IF NOT EXISTS tracks (
 
 DROP table tracks;
 DROP table users;
+
+DROP table tracks;
+DROP table users;
