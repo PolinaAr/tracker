@@ -31,41 +31,46 @@ public class TrackController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
-        if (session.getAttribute("user") != null) {
-            PrintWriter out = resp.getWriter();
-            resp.setContentType("application/json");
+        if (session != null){
+            if (session.getAttribute("user") != null) {
+                PrintWriter out = resp.getWriter();
+                resp.setContentType("application/json");
 
-            UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute("user");
-            Long userId = userResponseDto.getId();
-            try {
-                if (req.getParameter("id") == null) {
-                    List<TrackResponseDto> tracks = trackService.getByUserId(userId);
-                    JSONArray tracksJson = new JSONArray(tracks);
-                    out.print(tracksJson);
-                } else {
-                    Long id = Long.valueOf(req.getParameter("id"));
-                    if (isCorrectUser(session, id)) {
-                        TrackResponseDto responseDto = trackService.getById(id);
-                        JSONObject responseJson = new JSONObject(responseDto);
-                        out.print(responseJson);
+                UserResponseDto userResponseDto = (UserResponseDto) session.getAttribute("user");
+                Long userId = userResponseDto.getId();
+                try {
+                    if (req.getParameter("id") == null) {
+                        List<TrackResponseDto> tracks = trackService.getByUserId(userId);
+                        JSONArray tracksJson = new JSONArray(tracks);
+                        out.print(tracksJson);
                     } else {
-                        resp.setStatus(403);
+                        Long id = Long.valueOf(req.getParameter("id"));
+                        if (isCorrectUser(session, id)) {
+                            TrackResponseDto responseDto = trackService.getById(id);
+                            JSONObject responseJson = new JSONObject(responseDto);
+                            out.print(responseJson);
+                        } else {
+                            resp.setStatus(403);
+                        }
                     }
+                } catch (DatabaseException | EntityNotFoundException ex) {
+                    JSONObject exception = new JSONObject();
+                    exception.put("message", ex.getMessage());
+                    out.print(exception);
                 }
-            } catch (DatabaseException | EntityNotFoundException ex) {
-                JSONObject exception = new JSONObject();
-                exception.put("message", ex.getMessage());
-                out.print(exception);
+                out.flush();
+            } else {
+                resp.setStatus(403);
             }
-            out.flush();
         } else {
-            resp.setStatus(403);
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
         if (session.getAttribute("user") != null) {
             UserResponseDto authUser = (UserResponseDto) session.getAttribute("user");
             JSONObject body = readBody(req);
@@ -91,7 +96,7 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
         Long id = Long.parseLong(req.getParameter("id"));
 
         if (session.getAttribute("user") != null && isCorrectUser(session, id)) {
@@ -120,7 +125,7 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession();
         Long id = Long.parseLong(req.getParameter("id"));
 
         if (session.getAttribute("user") != null && isCorrectUser(session, id)) {
