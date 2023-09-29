@@ -1,18 +1,17 @@
 package com.andersen.telegram;
 
+import com.andersen.util.PropertiesLoader;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class TelegramBot extends TelegramLongPollingBot {
 
-    private final String username;
-    private final String token;
+
+    PropertiesLoader props = new PropertiesLoader();
+    private final String username = props.getProperty("bot.name");
+    private final String token = props.getProperty("bot.token");
 
 
-    public TelegramBot(String username, String token) {
-        this.username = username;
-        this.token = token;
-    }
 
     @Override
     public void onUpdateReceived(Update update) {
