@@ -15,9 +15,6 @@ import java.util.List;
 public class ChatIDDaoImpl implements ChatIDDao{
 
     private static ChatIDDao chatIDDao;
-
-
-    //TODO: Write EXISTS statement
     private final String CREATE = "INSERT INTO chat_ids (id) VALUES (?);";
     private final String GET_BY_ID = "SELECT id " +
             "FROM chat_ids WHERE id = ?";
