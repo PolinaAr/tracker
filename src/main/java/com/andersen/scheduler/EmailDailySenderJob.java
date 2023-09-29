@@ -19,7 +19,7 @@ public class EmailDailySenderJob implements Job {
     private final String host = props.getProperty("mail.host");
     private final int port = Integer.parseInt(props.getProperty("mail.port"));
     private final String to = props.getProperty("mail.to");
-    private final String reportFile = props.getProperty("reportPath");
+    private final String reportFile = props.getProperty("report.path");
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {

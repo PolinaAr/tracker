@@ -1,5 +1,7 @@
 package com.andersen.scheduler;
 
+import com.andersen.telegram.TelegramBot;
+import com.andersen.telegram.TelegramBotConfiguration;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
@@ -9,6 +11,7 @@ import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -20,6 +23,7 @@ public class JobsListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+
         try {
             SchedulerFactory factory = new StdSchedulerFactory();
             Scheduler scheduler = factory.getScheduler();
@@ -27,6 +31,10 @@ public class JobsListener implements ServletContextListener {
             JobDetail jobDetailEmailDailySender = JobBuilder
                     .newJob(EmailDailySenderJob.class)
                     .withIdentity("emailDailySenderJob")
+                    .build();
+            JobDetail jobDetailTelegramDailySender = JobBuilder
+                    .newJob(TelegramDailySenderJob.class)
+                    .withIdentity("telegramDailySenderJob")
                     .build();
 
             CronTrigger cronTriggerEmailDailySender = TriggerBuilder
@@ -38,7 +46,17 @@ public class JobsListener implements ServletContextListener {
                             .inTimeZone(TimeZone.getTimeZone("GMT+3")))
                     .build();
 
+            CronTrigger cronTriggerTelegramDailySender = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("telegramDailySenderTrigger")
+                    .startNow()
+                    .withSchedule(CronScheduleBuilder
+                            .cronSchedule("0 00 23 ? * MON-FRI")
+                            .inTimeZone(TimeZone.getTimeZone("GMT+3")))
+                    .build();
+
             scheduler.scheduleJob(jobDetailEmailDailySender, cronTriggerEmailDailySender);
+            scheduler.scheduleJob(jobDetailTelegramDailySender, cronTriggerTelegramDailySender);
 
             scheduler.start();
         } catch (Exception e) {
