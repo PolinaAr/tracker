@@ -15,6 +15,10 @@ CREATE TABLE IF NOT EXISTS tracks (
     user_id BIGINT REFERENCES "users"(id)
 );
 
+CREATE TABLE IF NOT EXISTS chat_ids(
+    id BIGINT PRIMARY KEY
+);
+
 DROP table tracks;
 DROP table users;
 
