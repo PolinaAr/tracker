@@ -15,10 +15,4 @@
         <url-pattern>http://localhost:3000</url-pattern>
     </filter-mapping>
 
-    <servlet>
-        <servlet-name>SettingServlet</servlet-name>
-        <servlet-class>com.andersen.config.SettingServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
 </web-app>
