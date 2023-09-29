@@ -37,10 +37,9 @@ public class ChatIDDaoImpl implements ChatIDDao{
     public Long create(Long chatId) {
         try (PreparedStatement statement = DBConfigurator.getConnection().prepareStatement(CREATE)) {
             statement.setLong(1, chatId);
-            ResultSet resultSet = statement.executeQuery();
-            System.out.println(resultSet);
-            if (resultSet.next()) {
-                return resultSet.getLong("id");
+            int result = statement.executeUpdate();
+            if (result == 1) {
+                return getById(chatId);
             } else {
                 throw new EntityNotFoundException("There is no chatID = " + chatId);
             }
@@ -55,8 +54,7 @@ public class ChatIDDaoImpl implements ChatIDDao{
             statement.setLong(1, chatId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                long id = resultSet.getLong("id");
-                return id;
+                return resultSet.getLong("id");
             }else {
                 return CHAT_ID_NOT_FOUND;
             }

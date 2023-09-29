@@ -6,17 +6,28 @@ import com.andersen.util.PropertiesLoader;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.io.File;
-import java.util.List;
-
 public class TelegramBot extends TelegramLongPollingBot {
+
+    private static final String GOODBYE_MESSAGE = "You now unsubscribed from daily report"
+            + "\nTo start receiving reports type \'/start\'";
+    private static final String ALREADY_SUBSCRIBED = "You already subscribed";
+    private static String HELLO_MESSAGE = "Hello %s you have submitted subscription to daily report"
+            + "\n To stop receiving reports type \'/stop\'";
+
+    private static TelegramBot telegramBot;
     private PropertiesLoader props = new PropertiesLoader();
     private final String botName = props.getProperty("bot.name");
     private final String token = props.getProperty("bot.token");
+
+    public static TelegramBot getInstance() {
+        if (telegramBot == null) {
+            telegramBot = new TelegramBot();
+        }
+        return telegramBot;
+    }
 
     private final Long CHAT_ID_NOT_FOUND = -1L;
 
@@ -29,15 +40,16 @@ public class TelegramBot extends TelegramLongPollingBot {
             String username = update.getMessage().getFrom().getUserName();
             if (!isChatIdExists(chatId)) {
                 addChatIdToDatabase(chatId);
-                sendWelcomeMessage(username, chatId);
+                sendMessage(new SendMessage(chatId.toString(),
+                        String.format(HELLO_MESSAGE, username)));
             }else{
-                sendMessage(new SendMessage(chatId.toString(), "You already subscribed"));
+                sendMessage(new SendMessage(chatId.toString(),
+                        ALREADY_SUBSCRIBED));
             }
         }
         if (update.getMessage().getText().equalsIgnoreCase("/stop")){
-            boolean deleted = chatDao.delete(chatId);
-            System.out.println("deleted = " + deleted);
-            sendGoodbyeMessage(chatId);
+            chatDao.delete(chatId);
+            sendMessage(new SendMessage(chatId.toString(), GOODBYE_MESSAGE));
         }
     }
 
@@ -45,34 +57,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         return chatDao.getById(chatId) != CHAT_ID_NOT_FOUND;
     }
 
-    private void sendGoodbyeMessage(Long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("You now unsubscribed from daily report"
-                + "\n To start receiving reports type \'/start\'");
-        sendMessage(message);
-    }
-
-    private void sendWelcomeMessage(String username, Long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Hello " + username + " you have submitted subscription to daily report"
-        + "\n To stop receiving reports type \'/stop\'");
-        sendMessage(message);
-    }
-
-    public void sendReport(){
-        List<Long> chatIDs = chatDao.getAll();
-        SendDocument sendingMessage = new SendDocument();
-        sendingMessage.setCaption("Blue team report");
-        sendingMessage.setDocument(new InputFile(new File(props.getProperty("pathToReportFile"))));
-        for (Long chatId : chatIDs) {
-            sendingMessage.setChatId(chatId);
-            sendMessage(sendingMessage);
-        }
-    }
-
-    private void sendMessage(SendDocument message){
+    public void sendMessage(SendDocument message){
         try {
             execute(message);
         } catch (TelegramApiException e) {
@@ -80,7 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMessage(SendMessage message){
+    public void sendMessage(SendMessage message){
         try {
             execute(message);
         } catch (TelegramApiException e) {

@@ -14,4 +14,5 @@
         <filter-name>CorsFilter</filter-name>
         <url-pattern>http://localhost:3000</url-pattern>
     </filter-mapping>
+
 </web-app>

@@ -32,14 +32,14 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public String createDailyReport(LocalDate localDate, String reportName) {
+    public String createDailyReport(LocalDate localDate, String filePath) {
         List<TrackResponseDto> tracks = trackService.getByData(localDate);
 
         Document doc = new Document();
         PdfWriter writer = null;
 
         try {
-            writer = PdfWriter.getInstance(doc, new FileOutputStream(reportName));
+            writer = PdfWriter.getInstance(doc, new FileOutputStream(filePath));
             doc.open();
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
@@ -68,7 +68,7 @@ public class ReportServiceImpl implements ReportService{
             }
 
             doc.add(table);
-            return reportName;
+            return filePath;
         } catch (DocumentException | FileNotFoundException e) {
             throw new RuntimeException(e);
         } finally {
