@@ -1,5 +1,7 @@
 package com.andersen.mail;
 
+import com.andersen.exception.EmailException;
+
 import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -49,14 +51,12 @@ public class MailWithAttachmentService {
 
             MimeBodyPart attachmentPart = new MimeBodyPart();
             attachmentPart.attachFile(new File(filename));
-//            attachmentPart.attachFile(getFile(filename));
             multipart.addBodyPart(attachmentPart);
 
             message.setContent(multipart);
             Transport.send(message);
         } catch (MessagingException | IOException e) {
-            throw new RuntimeException(e);
-//            throw new EmailException("Can't send email");
+            throw new EmailException("Can't send email");
         }
     }
 
@@ -74,15 +74,4 @@ public class MailWithAttachmentService {
         });
     }
 
-    private File getFile(String filename) {
-        try {
-            URI uri = this.getClass()
-                    .getClassLoader()
-                    .getResource(filename)
-                    .toURI();
-            return new File(uri);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to find file from resources: " + filename);
-        }
-    }
 }
