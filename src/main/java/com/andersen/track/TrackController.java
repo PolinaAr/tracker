@@ -30,7 +30,7 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
         if (session.getAttribute("user") != null) {
             PrintWriter out = resp.getWriter();
             resp.setContentType("application/json");
@@ -65,7 +65,7 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
         if (session.getAttribute("user") != null) {
             UserResponseDto authUser = (UserResponseDto) session.getAttribute("user");
             JSONObject body = readBody(req);
@@ -91,7 +91,7 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
         Long id = Long.parseLong(req.getParameter("id"));
 
         if (session.getAttribute("user") != null && isCorrectUser(session, id)) {
@@ -120,7 +120,7 @@ public class TrackController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
         Long id = Long.parseLong(req.getParameter("id"));
 
         if (session.getAttribute("user") != null && isCorrectUser(session, id)) {
