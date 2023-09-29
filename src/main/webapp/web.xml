@@ -14,4 +14,12 @@
         <filter-name>CorsFilter</filter-name>
         <url-pattern>http://localhost:3000</url-pattern>
     </filter-mapping>
+    <session-config>
+        <cookie-config>
+            <name>JSESSIONID</name>
+            <path>/</path>
+            <http-only>true</http-only>
+            <secure>true</secure>
+        </cookie-config>
+    </session-config>
 </web-app>
