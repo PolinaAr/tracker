@@ -1,17 +1,13 @@
 package com.andersen.scheduler;
 
-import com.andersen.telegram.TelegramBot;
-import com.andersen.telegram.TelegramBotConfiguration;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -23,7 +19,6 @@ public class JobsListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-
         try {
             SchedulerFactory factory = new StdSchedulerFactory();
             Scheduler scheduler = factory.getScheduler();
