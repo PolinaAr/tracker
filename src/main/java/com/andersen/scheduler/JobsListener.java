@@ -37,7 +37,7 @@ public class JobsListener implements ServletContextListener {
                     .withIdentity("emailDailySenderTrigger")
                     .startNow()
                     .withSchedule(CronScheduleBuilder
-                            .cronSchedule("0 37 00 * * ?")
+                            .cronSchedule("0 * * * * ?")
                             .inTimeZone(TimeZone.getTimeZone("GMT+3")))
                     .build();
 
