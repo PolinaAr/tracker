@@ -53,6 +53,7 @@ public class JobsListener implements ServletContextListener {
             scheduler.scheduleJob(jobDetailEmailDailySender, cronTriggerEmailDailySender);
             scheduler.scheduleJob(jobDetailTelegramDailySender, cronTriggerTelegramDailySender);
 
+
             scheduler.start();
         } catch (Exception e) {
             e.printStackTrace();
