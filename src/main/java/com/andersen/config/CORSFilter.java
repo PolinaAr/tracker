@@ -34,7 +34,8 @@ public class CORSFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        httpResponse.setHeader("Access-Control-Allow-Origin", "http://34.118.36.24:3000");
+//        httpResponse.setHeader("Access-Control-Allow-Origin", "http://34.118.36.24:3000");
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 
