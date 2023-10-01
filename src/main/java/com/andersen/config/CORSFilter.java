@@ -18,16 +18,33 @@ public class CORSFilter implements Filter {
         Filter.super.init(filterConfig);
     }
 
+//    @Override
+//    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+//        HttpServletRequest request = (HttpServletRequest) servletRequest;
+//
+//        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "*");
+//        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTIONS,HEAD");
+//        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers","Content-Type, API-Key");
+//        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Credentials", "true");
+//
+//        filterChain.doFilter(request, servletResponse);
+//    }
+
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "*");
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET,POST,PUT,DELETE,OPTIONS,HEAD");
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers","Content-Type, API-Key");
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Credentials", "true");
+        httpResponse.setHeader("Access-Control-Allow-Origin", "*");
 
-        filterChain.doFilter(request, servletResponse);
+        httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+
+        httpResponse.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+
+        httpResponse.setHeader("Access-Control-Max-Age", "3600");
+
+        chain.doFilter(request, response);
     }
 
     @Override
