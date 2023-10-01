@@ -1,4 +1,4 @@
-package com.andersen.scheduler;
+package com.andersen.scheduler.job;
 
 import com.andersen.mail.MailWithAttachmentService;
 import com.andersen.report.ReportService;

@@ -1,4 +1,4 @@
-package com.andersen.scheduler;
+package com.andersen.scheduler.job;
 
 import com.andersen.report.ReportService;
 import com.andersen.report.ReportServiceImpl;

@@ -1,4 +1,4 @@
-package com.andersen.track;
+package com.andersen.track.controller;
 
 import com.andersen.exception.DatabaseException;
 import com.andersen.exception.EntityNotFoundException;

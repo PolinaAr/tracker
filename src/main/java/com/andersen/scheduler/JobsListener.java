@@ -1,5 +1,7 @@
 package com.andersen.scheduler;
 
+import com.andersen.scheduler.job.EmailDailySenderJob;
+import com.andersen.scheduler.job.TelegramDailySenderJob;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;

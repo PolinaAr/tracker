@@ -16,7 +16,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Properties;
 
 public class MailWithAttachmentService {
