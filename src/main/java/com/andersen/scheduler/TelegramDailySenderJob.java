@@ -30,8 +30,8 @@ public class TelegramDailySenderJob implements Job {
         List<Long> chatIDs = chatDao.getAll();
         SendDocument sendingMessage = new SendDocument();
         sendingMessage.setCaption("Blue team report");
-        String report = reportService.createDailyReport(LocalDate.now(), reportPath);
-        sendingMessage.setDocument(new InputFile(new File(report)));
+        File report = reportService.createDailyReport(LocalDate.now(), reportPath);
+        sendingMessage.setDocument(new InputFile(report));
         for (Long chatId : chatIDs) {
             sendingMessage.setChatId(chatId);
             telegramBot.sendMessage(sendingMessage);

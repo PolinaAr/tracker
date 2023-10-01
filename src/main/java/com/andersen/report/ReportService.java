@@ -1,8 +1,9 @@
 package com.andersen.report;
 
+import java.io.File;
 import java.time.LocalDate;
 
 public interface ReportService {
 
-    String createDailyReport(LocalDate localDate, String filePath);
+    File createDailyReport(LocalDate localDate, String filePath);
 }

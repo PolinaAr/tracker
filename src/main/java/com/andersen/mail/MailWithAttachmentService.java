@@ -35,7 +35,7 @@ public class MailWithAttachmentService {
         this.to = to;
     }
 
-    public void sendMail(String subject, String messageBody, String filename) {
+    public void sendMail(String subject, String messageBody, File file) {
         Session session = getSession();
         try {
             Message message = new MimeMessage(session);
@@ -50,7 +50,7 @@ public class MailWithAttachmentService {
             multipart.addBodyPart(messageBodyPart);
 
             MimeBodyPart attachmentPart = new MimeBodyPart();
-            attachmentPart.attachFile(new File(filename));
+            attachmentPart.attachFile(file);
             multipart.addBodyPart(attachmentPart);
 
             message.setContent(multipart);

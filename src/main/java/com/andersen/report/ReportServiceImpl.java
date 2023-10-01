@@ -13,6 +13,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
@@ -32,14 +33,16 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public String createDailyReport(LocalDate localDate, String filePath) {
+    public File createDailyReport(LocalDate localDate, String filePath) {
         List<TrackResponseDto> tracks = trackService.getByData(localDate);
+
+        File file = new File(filePath);
 
         Document doc = new Document();
         PdfWriter writer = null;
 
         try {
-            writer = PdfWriter.getInstance(doc, new FileOutputStream(filePath));
+            writer = PdfWriter.getInstance(doc, new FileOutputStream(file));
             doc.open();
             PdfPTable table = new PdfPTable(4);
             table.setWidthPercentage(100);
@@ -68,7 +71,7 @@ public class ReportServiceImpl implements ReportService{
             }
 
             doc.add(table);
-            return filePath;
+            return file;
         } catch (DocumentException | FileNotFoundException e) {
             throw new RuntimeException(e);
         } finally {

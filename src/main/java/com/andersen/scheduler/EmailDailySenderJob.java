@@ -8,6 +8,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.io.File;
 import java.time.LocalDate;
 
 public class EmailDailySenderJob implements Job {
@@ -25,7 +26,7 @@ public class EmailDailySenderJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         String subject = "Daily report";
         String body = "It's a today daily report: " + LocalDate.now();
-        String report = reportService.createDailyReport(LocalDate.now(), reportFile);
+        File report = reportService.createDailyReport(LocalDate.now(), reportFile);
         MailWithAttachmentService mail = new MailWithAttachmentService(from, password, host, port, to);
         mail.sendMail(subject, body, report);
     }
