@@ -10,9 +10,13 @@
         <filter-class>com.andersen.config.CORSFilter</filter-class>
     </filter>
 
+<!--    <filter-mapping>-->
+<!--        <filter-name>CorsFilter</filter-name>-->
+<!--        <url-pattern>http://localhost:3000</url-pattern>-->
+<!--    </filter-mapping>-->
     <filter-mapping>
         <filter-name>CorsFilter</filter-name>
-        <url-pattern>http://localhost:3000</url-pattern>
+        <url-pattern>http://34.118.36.24:3000</url-pattern>
     </filter-mapping>
 
     <listener>
