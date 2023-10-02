@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -27,9 +28,15 @@ public class CORSFilter implements Filter {
 
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
-        httpResponse.setHeader("Set-Cookie", httpResponse.getHeader("Set-Cookie") + "; SameSite=none");
+//        httpResponse.setHeader("Set-Cookie", httpResponse.getHeader("Set-Cookie") + "; SameSite=none");
 
-        request.getServletContext().getSessionCookieConfig().setSecure(true);
+//        request.getServletContext().getSessionCookieConfig().setSecure(true);
+
+        Cookie cookie = new Cookie("Set-Cookie", "SameSite=none");
+        cookie.setMaxAge(120); // age in seconds
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        httpResponse.addCookie(cookie);
 
         chain.doFilter(request, response);
     }
