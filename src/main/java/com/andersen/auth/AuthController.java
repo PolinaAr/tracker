@@ -24,18 +24,18 @@ public class AuthController extends HttpServlet {
 
         String path = req.getServletPath();
         HttpSession httpSession = req.getSession();
-        switch (path){
+        switch (path) {
             case "/login":
                 JSONObject user = new JSONObject(body);
                 String email = user.getString("email");
-                if (userService.validateUserForLogin(email, user.getString("password"))){
+                if (userService.validateUserForLogin(email, user.getString("password"))) {
                     httpSession.setAttribute("user", userService.getByEmail(email));
                 } else {
                     resp.setStatus(403);
                 }
                 break;
             case "/logout":
-                if (httpSession.getAttribute("user") != null){
+                if (httpSession.getAttribute("user") != null) {
                     httpSession.removeAttribute("user");
                 }
                 break;

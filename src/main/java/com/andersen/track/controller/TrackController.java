@@ -50,7 +50,6 @@ public class TrackController extends HttpServlet {
                         out.print(responseJson);
                     } else {
                         resp.setStatus(403);
-                        resp.setHeader("Inside", "Get");
                     }
                 }
             } catch (DatabaseException | EntityNotFoundException ex) {
@@ -61,7 +60,6 @@ public class TrackController extends HttpServlet {
             out.flush();
         } else {
             resp.setStatus(403);
-            resp.setHeader("Outside", "Get");
         }
     }
 
