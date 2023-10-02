@@ -28,9 +28,16 @@ public class CORSFilter implements Filter {
 
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
-        httpResponse.setHeader("Set-Cookie", httpResponse.getHeader("Set-Cookie") + "; SameSite=none;Secure");
+//        httpResponse.setHeader("Set-Cookie", httpResponse.getHeader("Set-Cookie") + "; SameSite=none");
 
 //        request.getServletContext().getSessionCookieConfig().setSecure(true);
+
+        Cookie cookie = new Cookie("Set-Cookie", "SameSite=none");
+        cookie.setMaxAge(120);
+        cookie.setPath("/time-tracker");
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        httpResponse.addCookie(cookie);
 
         chain.doFilter(request, response);
     }
