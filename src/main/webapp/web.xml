@@ -25,5 +25,4 @@
     <listener>
         <listener-class>com.andersen.scheduler.JobsListener</listener-class>
     </listener>
-
 </web-app>
