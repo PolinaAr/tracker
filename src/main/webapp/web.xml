@@ -37,5 +37,9 @@
     <cookie-config>
         <same-site-cookies>None</same-site-cookies>
     </cookie-config>
-
+    <servlet-container name="default">
+        <jsp-config/>
+        <session-cookie comment="; SameSite=None"/>
+        <websockets/>
+    </servlet-container>
 </web-app>

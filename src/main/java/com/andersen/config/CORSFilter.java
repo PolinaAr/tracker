@@ -9,7 +9,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
+import java.util.Collection;
 
 @WebFilter("/*")
 public class CORSFilter implements Filter {
@@ -28,7 +30,22 @@ public class CORSFilter implements Filter {
 
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
+        addSameSiteCookieAttribute((HttpServletResponse) response);
+
         chain.doFilter(request, response);
+    }
+
+    private void addSameSiteCookieAttribute(HttpServletResponse response) {
+        Collection<String> headers = response.getHeaders(HttpHeaders.SET_COOKIE);
+        boolean firstHeader = true;
+        for (String header : headers) {
+            if (firstHeader) {
+                response.setHeader(HttpHeaders.SET_COOKIE, String.format("%s; %s", header, "SameSite=none"));
+                firstHeader = false;
+                continue;
+            }
+            response.addHeader(HttpHeaders.SET_COOKIE, String.format("%s; %s", header, "SameSite=none"));
+        }
     }
 
     @Override
