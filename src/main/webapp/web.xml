@@ -26,4 +26,16 @@
         <listener-class>com.andersen.scheduler.JobsListener</listener-class>
     </listener>
 
+    <session-config>
+        <cookie-config>
+            <name>JSESSIONID</name>
+            <path>/</path>
+            <http-only>true</http-only>
+            <secure>true</secure>
+        </cookie-config>
+    </session-config>
+    <cookie-config>
+        <same-site-cookies>None</same-site-cookies>
+    </cookie-config>
+
 </web-app>
