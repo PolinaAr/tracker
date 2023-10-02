@@ -33,9 +33,9 @@ public class CORSFilter implements Filter {
 //        request.getServletContext().getSessionCookieConfig().setSecure(true);
 
         Cookie cookie = new Cookie("Set-Cookie", "SameSite=none");
-        cookie.setMaxAge(120);
+//        cookie.setMaxAge(120);
         cookie.setPath("/time-tracker");
-        cookie.setSecure(false);
+        cookie.setSecure(true);
         cookie.setHttpOnly(true);
         httpResponse.addCookie(cookie);
 
