@@ -39,21 +39,21 @@ public class JobsListener implements ServletContextListener {
                     .withIdentity("emailDailySenderTrigger")
                     .startNow()
                     .withSchedule(CronScheduleBuilder
-                            .cronSchedule("0 10 20 * * ?")
+                            .cronSchedule("0 00 23 * * ?")
                             .inTimeZone(TimeZone.getTimeZone("GMT+3")))
                     .build();
 
-//            CronTrigger cronTriggerTelegramDailySender = TriggerBuilder
-//                    .newTrigger()
-//                    .withIdentity("telegramDailySenderTrigger")
-//                    .startNow()
-//                    .withSchedule(CronScheduleBuilder
-//                            .cronSchedule("0 * * * * ?")
-//                            .inTimeZone(TimeZone.getTimeZone("GMT+3")))
-//                    .build();
+            CronTrigger cronTriggerTelegramDailySender = TriggerBuilder
+                    .newTrigger()
+                    .withIdentity("telegramDailySenderTrigger")
+                    .startNow()
+                    .withSchedule(CronScheduleBuilder
+                            .cronSchedule("0 00 23 * * ?")
+                            .inTimeZone(TimeZone.getTimeZone("GMT+3")))
+                    .build();
 
             scheduler.scheduleJob(jobDetailEmailDailySender, cronTriggerEmailDailySender);
-//            scheduler.scheduleJob(jobDetailTelegramDailySender, cronTriggerTelegramDailySender);
+            scheduler.scheduleJob(jobDetailTelegramDailySender, cronTriggerTelegramDailySender);
 
 
             scheduler.start();
