@@ -30,22 +30,9 @@ public class CORSFilter implements Filter {
 
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
 
-        addSameSiteCookieAttribute((HttpServletResponse) response);
+        httpResponse.setHeader("Set-Cookie", httpResponse.getHeader("Set-Cookie") + "; SameSite=none");
 
         chain.doFilter(request, response);
-    }
-
-    private void addSameSiteCookieAttribute(HttpServletResponse response) {
-        Collection<String> headers = response.getHeaders(HttpHeaders.SET_COOKIE);
-        boolean firstHeader = true;
-        for (String header : headers) {
-            if (firstHeader) {
-                response.setHeader(HttpHeaders.SET_COOKIE, String.format("%s; %s", header, "SameSite=none"));
-                firstHeader = false;
-                continue;
-            }
-            response.addHeader(HttpHeaders.SET_COOKIE, String.format("%s; %s", header, "SameSite=none"));
-        }
     }
 
     @Override
