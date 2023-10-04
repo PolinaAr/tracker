@@ -21,6 +21,3 @@ CREATE TABLE IF NOT EXISTS chat_ids(
 
 DROP table tracks;
 DROP table users;
-
-DROP table tracks;
-DROP table users;
