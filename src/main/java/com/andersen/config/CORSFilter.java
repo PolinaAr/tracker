@@ -17,7 +17,7 @@ public class CORSFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        httpResponse.setHeader("Access-Control-Allow-Origin", "http://34.118.36.24:3000");
+        httpResponse.setHeader("Access-Control-Allow-Origin", "http://34.118.36.24");
 //        httpResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 
         httpResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -27,17 +27,6 @@ public class CORSFilter implements Filter {
         httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
 
         httpResponse.setHeader("Access-Control-Max-Age", "3600");
-
-//        httpResponse.setHeader("Set-Cookie", httpResponse.getHeader("Set-Cookie") + "; SameSite=none");
-
-//        request.getServletContext().getSessionCookieConfig().setSecure(true);
-
-        Cookie cookie = new Cookie("Set-Cookie", "SameSite=none");
-//        cookie.setMaxAge(120);
-        cookie.setPath("/time-tracker");
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        httpResponse.addCookie(cookie);
 
         chain.doFilter(request, response);
     }
